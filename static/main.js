@@ -55,10 +55,10 @@
                 });
             };
 
-        this.testStuff = function(){
-            var jobID1="929acea8-c631-498c-9e1d-d88ac6889402";
-            getWordCount(jobID1)
-        };
+        //this.testStuff = function(){
+        //    var jobID1="929acea8-c631-498c-9e1d-d88ac6889402";
+        //    getWordCount(jobID1)
+        //};
 
         //this.orClick = function(){
         //    $log.log("test")
