@@ -1,0 +1,16 @@
+DATABASE_URL="postgresql://wordcounter:counted@localhost/wordcounts"
+db name= wordcounts
+user = wordcounter
+pass = counted
+
+
+Summary:
+The project does a word count of the top words used in a website, except for a list of unincluded words.
+
+It uses RQ and redis for a worker task queue in the background.
+It uses
+
+# Python
+# =========================
+venv
+stuff.txt
