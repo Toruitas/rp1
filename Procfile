@@ -1,1 +1,1 @@
-web:gunicorn rp1:app
+web: sh heroku.sh
