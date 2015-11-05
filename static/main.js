@@ -38,6 +38,10 @@
     var app = angular.module('WordcountApp', []);
 
     app.controller('WordcountController', ['$scope','$log','$http','$timeout', function($scope, $log,$http,$timeout) {
+        $scope.submitButtonText = "Submit";
+        $scope.loading = false;
+        $scope.urlError = false;
+
         this.getResults = function() {
             $log.log("test");
 
@@ -49,20 +53,15 @@
                 .then(function(response){
                     $log.log(response);
                     getWordCount(response.data); //.data is the actual id
+                    $scope.wordcounts = null;
+                    $scope.loading = true;
+                    $scope.submitButtonText = "Loading...";
                 },
                 function(error){
                     $log.error(error);
                 });
             };
 
-        //this.testStuff = function(){
-        //    var jobID1="929acea8-c631-498c-9e1d-d88ac6889402";
-        //    getWordCount(jobID1)
-        //};
-
-        //this.orClick = function(){
-        //    $log.log("test")
-        //};
 
         function getWordCount(jobID) {
               var timeout = "";
@@ -75,14 +74,23 @@
                         $log.log(response.data, response.status);
                     } else if (response.status === 200){
                         $log.log(response.data);
+                        $scope.loading=false;
+                        $scope.submitButtonText = "Submit";
                         $scope.wordcounts = response.data;
+                        $scope.urlError = false;
                         $timeout.cancel(timeout);
                         return false;
                     }
                     // continue to call the poller() function every 2 seconds
                     // until the timeout is cancelled
                     timeout = $timeout(poller, 2000);
-                  });
+                  },
+                error(function(error){
+                    $log.log(error);
+                    $scope.loading = false;
+                    $scope.submitButtonText="Submit";
+                    $scope.urlError = true;
+                }));
               };
               poller();
             }

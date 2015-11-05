@@ -15,10 +15,10 @@ from worker import conn
 from stop_words import stops
 
 ###configuration & creation
-from config import configs
+#from config import configs
 app = Flask(__name__)
-config_name = os.getenv('FLASK_CONFIG') or 'default'
-app.config.from_object(configs[config_name])
+# config_name = os.getenv('FLASK_CONFIG') or 'default'
+# app.config.from_object(configs[config_name])
 db = SQLAlchemy(app)
 q = Queue(connection=conn)  # connection to redis and initializes queue on it
 from models import Result
