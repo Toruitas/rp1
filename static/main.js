@@ -42,58 +42,97 @@
         $scope.loading = false;
         $scope.urlError = false;
 
-        this.getResults = function() {
+        $scope.getResults = function() {
             $log.log("test");
 
             // get URL from input
             //fire API request
 
-            var userInput = this.input_url;
-            $http.post('/start',{"url":userInput})
-                .then(function(response){
-                    $log.log(response);
-                    getWordCount(response.data); //.data is the actual id
+            var userInput = $scope.input_url;
+            $http.post('/start', {"url": userInput}).
+                success(function(results) {
+                    $log.log("results " + results);
+                    getWordCount(results); //.data is the actual id
                     $scope.wordcounts = null;
                     $scope.loading = true;
-                    $scope.submitButtonText = "Loading...";
-                },
-                function(error){
-                    $log.error(error);
-                });
-            };
-
-
-        function getWordCount(jobID) {
-              var timeout = "";
-
-              var poller = function() {
-                // fire another request
-                $http.get('/results/'+jobID).
-                  then(function(response) {
-                    if(response.status === 202) {
-                        $log.log(response.data, response.status);
-                    } else if (response.status === 200){
-                        $log.log(response.data);
-                        $scope.loading=false;
-                        $scope.submitButtonText = "Submit";
-                        $scope.wordcounts = response.data;
-                        $scope.urlError = false;
-                        $timeout.cancel(timeout);
-                        return false;
-                    }
-                    // continue to call the poller() function every 2 seconds
-                    // until the timeout is cancelled
-                    timeout = $timeout(poller, 2000);
-                  },
-                error(function(error){
+                    $scope.submitButtonText = "Loading..."
+                }).
+                error(function(error) {
                     $log.log(error);
-                    $scope.loading = false;
-                    $scope.submitButtonText="Submit";
-                    $scope.urlError = true;
-                }));
-              };
-              poller();
-            }
+                });
+
+            //$http.post('/start',{"url":userInput})
+            //    .success(function(response){
+            //        $log.log(response);
+            //        getWordCount(response.data); //.data is the actual id
+            //        $scope.wordcounts = null;
+            //        $scope.loading = true;
+            //        $scope.submitButtonText = "Loading...";
+            //    }).error(function(error){
+            //        $log.error(error);
+            //    });
+            };
+        function getWordCount(jobID) {
+
+          var timeout = "";
+
+          var poller = function() {
+            // fire another request
+            $http.get('/results/'+jobID).
+              success(function(data, status, headers, config) {
+                    //$log.log("ID "+ jobID);
+                    //$log.log('status' + status);
+                    //$log.log('data '+data);
+                if(status === 202) {
+                  $log.log(data, status);
+                } else if (status === 200){
+                    $log.log(data);
+                    $scope.loading=false;
+                    $scope.submitButtonText = "Submit";
+                    $scope.wordcounts = data;
+                    $scope.urlError = false;
+                    $timeout.cancel(timeout);
+                    return false;
+                }
+                // continue to call the poller() function every 2 seconds
+                // until the timeout is cancelled
+                timeout = $timeout(poller, 2000);
+              });
+          };
+          poller();
+        }
+
+
+        //function getWordCount(jobID) {
+        //      var timeout = "";
+        //
+        //      var poller = function() {
+        //        // fire another request
+        //        $http.get('/results/'+jobID).
+        //          success(function(response) {
+        //            if(response.status === 202) {
+        //                $log.log(response.data, response.status);
+        //            } else if (response.status === 200){
+        //                $log.log(response.data);
+        //                $scope.loading=false;
+        //                $scope.submitButtonText = "Submit";
+        //                $scope.wordcounts = response.data;
+        //                $scope.urlError = false;
+        //                $timeout.cancel(timeout);
+        //                return false;
+        //            }
+        //            // continue to call the poller() function every 2 seconds
+        //            // until the timeout is cancelled
+        //            timeout = $timeout(poller, 2000);
+        //          }.error(function(error){
+        //            $log.log(error);
+        //            $scope.loading = false;
+        //            $scope.submitButtonText="Submit";
+        //            $scope.urlError = true;
+        //        }));
+        //      };
+        //      poller();
+        //    }
 
       }
     ]);

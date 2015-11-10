@@ -5,10 +5,10 @@ from flask.ext.migrate import Migrate, MigrateCommand
 import os
 
 from rp1 import app, db
-from config import configs
-
-config_name = os.getenv('FLASK_CONFIG') or 'default'
-app.config.from_object(configs[config_name])
+# from config import configs
+#
+# config_name = os.getenv('FLASK_CONFIG') or 'default'
+# app.config.from_object(configs[config_name])
 
 migrate = Migrate(app, db)
 manager = Manager(app)

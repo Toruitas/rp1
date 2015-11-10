@@ -13,12 +13,12 @@ from rq.job import Job
 from worker import conn
 
 from stop_words import stops
+from config import configs
 
 ###configuration & creation
-#from config import configs
 app = Flask(__name__)
-# config_name = os.getenv('FLASK_CONFIG') or 'default'
-# app.config.from_object(configs[config_name])
+config_name = os.getenv('FLASK_CONFIG') or 'default'
+app.config.from_object(configs[config_name])
 db = SQLAlchemy(app)
 q = Queue(connection=conn)  # connection to redis and initializes queue on it
 from models import Result
@@ -52,7 +52,7 @@ def count_and_save_words(url):
     no_stop_words = [w for w in raw_words if w.lower() not in stops]
     no_stop_words_count = Counter(no_stop_words)
 
-    # save the results
+    #save the results
     try:
         result = Result(
             url=url,
@@ -63,8 +63,8 @@ def count_and_save_words(url):
         db.session.commit()
         return result.id
     except:
-        errors.append("Unable to add item to database.")
-        return {"error": errors}
+            errors.append("Unable to add item to database.")
+            return {"error": errors}
 
 
 #################### Routes #####################
@@ -103,6 +103,7 @@ def get_counts():
     if 'http://' not in url:
         url = 'http://'+url
     # start job
+    print(url)
     job = q.enqueue_call(func=count_and_save_words,args=(url,), result_ttl=5000)
     return job.get_id()
 
