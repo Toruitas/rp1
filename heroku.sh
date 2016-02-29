@@ -1,3 +1,3 @@
 #!/bin/bash
-gunicorn manage:app --daemon
+gunicorn rp1:app --daemon
 python worker.py
